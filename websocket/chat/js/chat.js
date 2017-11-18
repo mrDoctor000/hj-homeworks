@@ -33,8 +33,11 @@ document.addEventListener('DOMContentLoaded', event => {
     chat.querySelector('.message-content').appendChild(message);
   }
 
-  function deletoLoad() {
-    chat.querySelector('.message-content').removeChild(chat.querySelector('.loading'));
+  function deleteLoad() {
+    if(chat.querySelector('.loading') !== null) {
+      chat.querySelector('.message-content').removeChild(chat.querySelector('.loading'));
+    }
+    
   }
 
   function getMessage(data) {
@@ -50,13 +53,13 @@ document.addEventListener('DOMContentLoaded', event => {
     const span = document.createElement('span');
     span.className = 'message-text';
     span.textContent = data.message;
-    const time = document.activeElement.createElement('div');
-    time.className = 'timestamp';
-    time.textContent = time;
+    const timeMes = document.createElement('div');
+    timeMes.className = 'timestamp';
+    timeMes.textContent = time;
 
     message.appendChild(avatar);
     message.appendChild(span);
-    message.appendChild(time);
+    message.appendChild(timeMes);
     avatar.appendChild(img);
   }
 
@@ -66,7 +69,7 @@ document.addEventListener('DOMContentLoaded', event => {
     const data = {
       'message': message
     };
-    connection.send(JSON.stringify());
+    connection.send(data);
     getMessage(data)
   }
 
@@ -81,20 +84,16 @@ document.addEventListener('DOMContentLoaded', event => {
     chat.querySelector('.messages-content').appendChild(userIn);
   });
 
-  chat.querySelector('.message-submit').addEventListener('click', sendMessage);
-  chat.querySelector('.message-input').addEventListener('keydown', event => {
-    if (event.keyCode === 13) {
-      sendMessage(event);
-    }
-  })
+  chat.querySelector('.message-submit').addEventListener('submit', sendMessage);
+
 
   connection.addEventListener('message', event => {
-    var message = JSON.parse(event.data);
+    var message = event.data;
+
     if (message.message === '...') {
       loading();
     } else {
-      deletoLoad();
-
+      deleteLoad();
       chat.querySelector('.message-content').appendChild(message(message));
     }
   });
