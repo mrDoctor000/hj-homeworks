@@ -1,15 +1,18 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', event => {
+    function loadTwitter(url) {
+        return new Promise((done, fail) => {
+            window.parseBook = done;
 
-    fetch('https://neto-api.herokuapp.com/twitter/jsonp')
-    .then(res => {
-        console.log(res.headers.get('Content-Type'));
-        console.log(res.status);
+            const script = document.scripts[0].cloneNode();
+            script.src = `${url}?jsonp=readTwitter`
+            document.body.appendChild(script);
 
-        return res.json();
-    })
-    .then(content => {
+        })
+    }
+
+    function readTwitter(content) {
         document.querySelector('[data-username]').innerHTML = `${content.username}`;
         document.querySelector('[data-description]').innerHTML = `${content.description}`;
         document.querySelector('[data-tweets]').innerHTML = `${content.tweets}`;
@@ -18,7 +21,9 @@ document.addEventListener('DOMContentLoaded', event => {
 
         document.querySelector('[data-wallpaper]').src = content.wallpaper;
         document.querySelector('[data-pic]').src = content.pic;
-    })
+    }
 
-})
+    loadTwitter('https://neto-api.herokuapp.com/twitter/jsonp')
+        .then(readTwitter);
 
+});
