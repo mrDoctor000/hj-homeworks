@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', event => {
     img.setAttribute('src', 'https://netology-code.github.io/hj-homeworks/websocket/chat/i/profile-80.jpg');
     const span = document.createElement('span');
     span.className = 'message-text';
-    span.textContent = data.message;
+    span.textContent = data;
     const timeMes = document.createElement('div');
     timeMes.className = 'timestamp';
     timeMes.textContent = time;
