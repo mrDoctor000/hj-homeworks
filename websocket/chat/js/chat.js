@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', event => {
     const data = {
       'message': message
     };
-    connection.send(data);
-    getMessage(data)
+    connection.send(message);
+    getMessage(message)
   }
 
 
