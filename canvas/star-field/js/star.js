@@ -1,6 +1,8 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', event => {
+    const star = [];
+
     function starField() {
         this.num = function () {
             var num = Math.round(199.5 + Math.random() * (201));
@@ -35,19 +37,25 @@ document.addEventListener('DOMContentLoaded', event => {
     }
     function generateStar() {
 
-        const stars = new starField();
+        const star = new starField();
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        stars = [];
 
         for (var i = 0; i < stars.num; i++) {
             ctx.beginPath();
             ctx.arc(...stars.coord, stars.size / 2, 0, 2 * Math.PI);
             ctx.fill(star.color);
             ctx.globalAlpha(star.intensity);
+            stars.push(ctx)
         }
     }
 
     const canvas = document.querySelector('canvas')
     const ctx = canvas.getContext('2d');
-
-    canvas.addEventListener(click, generateStar);
+    
     generateStar();
+    canvas.addEventListener('click', e => {
+        generateStar();
+    });
+
 })

@@ -1,11 +1,12 @@
 'use strict'
 
 const chat = document.querySelector('.chat');
+const content = chat.querySelector('.messages-content');
 
 document.addEventListener('DOMContentLoaded', event => {
+  
 
   function messageStatus(event) {
-
     const message = document.createElement('div');
     message.className = 'message message-status';
     const span = document.createElement('span');
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', event => {
     span.textContent = event;
 
     message.appendChild(span);
+
     return message;
   }
 
@@ -24,20 +26,13 @@ document.addEventListener('DOMContentLoaded', event => {
     avatar.className = 'avatar';
     const span = document.createElement('span');
     const img = document.createElement('img');
-    img.setAttribute('src', './i/profile-80.jpg');
+    img.setAttribute('src', 'https://netology-code.github.io/hj-homeworks/websocket/chat/i/profile-80.jpg');
 
     message.appendChild(avatar);
     message.appendChild(span);
     avatar.appendChild(img);
 
     chat.querySelector('.message-content').appendChild(message);
-  }
-
-  function deleteLoad() {
-    if(chat.querySelector('.loading') !== null) {
-      chat.querySelector('.message-content').removeChild(chat.querySelector('.loading'));
-    }
-    
   }
 
   function getMessage(data) {
@@ -49,7 +44,7 @@ document.addEventListener('DOMContentLoaded', event => {
     const avatar = document.createElement('figure');
     avatar.className = 'avatar';
     const img = document.createElement('img');
-    img.setAttribute('src', './i/profile-80.jpg');
+    img.setAttribute('src', 'https://netology-code.github.io/hj-homeworks/websocket/chat/i/profile-80.jpg');
     const span = document.createElement('span');
     span.className = 'message-text';
     span.textContent = data.message;
@@ -61,6 +56,8 @@ document.addEventListener('DOMContentLoaded', event => {
     message.appendChild(span);
     message.appendChild(timeMes);
     avatar.appendChild(img);
+
+    return message;
   }
 
   function sendMessage() {
@@ -81,7 +78,7 @@ document.addEventListener('DOMContentLoaded', event => {
     chat.querySelector('.message-submit').removeAttribute('disabled');
 
     const userIn = messageStatus('Пользователь появился в сети');
-    chat.querySelector('.messages-content').appendChild(userIn);
+    content.appendChild(userIn);
   });
 
   chat.querySelector('.message-submit').addEventListener('submit', sendMessage);
@@ -93,8 +90,10 @@ document.addEventListener('DOMContentLoaded', event => {
     if (message.message === '...') {
       loading();
     } else {
-      deleteLoad();
-      chat.querySelector('.message-content').appendChild(message(message));
+      if(content.querySelector('.loading')) {
+        content.removeChild(content.querySelector('.loading'));
+      }
+      content.appendChild(getMessage(message));
     }
   });
 
@@ -104,7 +103,7 @@ document.addEventListener('DOMContentLoaded', event => {
       chat.querySelector('.message-submit').setAttribute('disabled', );
 
       const userOut = messageStatus('Пользователь не в сети');
-      chat.querySelector('.messages-content').appendChild(userOut);
+      content.appendChild(userOut);
     });
     connection.close()
   });

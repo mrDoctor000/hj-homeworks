@@ -13,8 +13,8 @@ let needsRepaint = false;
 
 
 document.addEventListener('DOMContentLoaded', e => {
-    draw.style.height = '100%';
-    draw.style.weird = '100%';
+    draw.height = '100%';
+    draw.weird = '100%';
 
     draw.addEventListener("mousedown", (evt) => {
         drawing = true;
