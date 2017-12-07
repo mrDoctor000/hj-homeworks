@@ -1,31 +1,40 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', event => {
-    fetch('https://neto-api.herokuapp.com/profile/me')
-        .then(res => {
-            console.log(res.headers.get('Content-Type'));
-            console.log(res.status);
+    function loadProfile(url) {
+        return new Promise((done, fail) => {
+            window.parseBook = done;
+            const script = document.createElement('script');
+            script.src = `${url}?jsonp=loadProfile`;
+            document.body.appendChild(script);
 
+        })
+    }
+
+    function loadTech(url) {
+        return new Promise((done, fail) => {
+            window.parseBook = done;
+            const script = document.createElement('script');
+            script.src = `${url}?jsonp=loadTech`;
+            document.body.appendChild(script);
+
+        })
+    }
+
+    loadProfile('https://neto-api.herokuapp.com/profile/me')
+        .then(res => {
             return res.json();
         })
-        .then(userId => {
-            fetch(`https://neto-api.herokuapp.com/profile/${user.id}/technologies`)
-                .then(res => {
-                    console.log(res.headers.get('Content-Type'));
-                    console.log(res.status);
-
-                    return res.json();
+        .then(res => {
+            loadTech(`https://neto-api.herokuapp.com/profile/${res.id}/technologies`)
+                .then(tech => {
+                    return tech.json();
                 })
                 .then(tech => {
-                    var user = {
-                        'name': userId.name,
-                        'description': userId.description,
-                        'pic': userId.pic,
-                        'position': userId.position,
-                        'tech': tech
-                    }
-                })
-            return user;
+                    res.technologies = tech;
+                });
+
+            return res;
         })
         .then(user => {
             document.querySelector('[data-name]').textContent = user.name;
@@ -44,4 +53,5 @@ document.addEventListener('DOMContentLoaded', event => {
         .catch(err => {
             console.error(err);
         });
-})
+
+});
