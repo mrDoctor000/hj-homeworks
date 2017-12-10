@@ -2,9 +2,15 @@
 
 const chat = document.querySelector('.chat');
 const content = chat.querySelector('.messages-content');
+const loading = content.querySelector('.loading')
+const box = chat.querySelector('.message-box');
+const input = box.querySelector('.message-input')
+const submit = box.querySelector('.message-submit');
+const status = chat.querySelector('.message-status');
+
 
 document.addEventListener('DOMContentLoaded', event => {
-  
+
 
   function messageStatus(event) {
     const message = document.createElement('div');
@@ -32,7 +38,7 @@ document.addEventListener('DOMContentLoaded', event => {
     message.appendChild(span);
     avatar.appendChild(img);
 
-    chat.querySelector('.message-content').appendChild(message);
+    content.appendChild(message);
   }
 
   function getMessage(data) {
@@ -60,13 +66,13 @@ document.addEventListener('DOMContentLoaded', event => {
     return message;
   }
 
-  function sendMessage() {
-    const message = chat.querySelector('message-input').value;
+  function sendMessage(event) {
+    event.preventDefault();
 
-    const data = {
-      'message': message
-    };
+    const message = input.value;
     connection.send(message);
+    input.value = '';
+
     getMessage(message)
   }
 
@@ -74,14 +80,27 @@ document.addEventListener('DOMContentLoaded', event => {
   const connection = new WebSocket('wss://neto-api.herokuapp.com/chat');
 
   connection.addEventListener('open', event => {
-    chat.querySelector('.chat-status').textContent = chat.querySelector('.chat-status').dataset.online;
-    chat.querySelector('.message-submit').removeAttribute('disabled');
+    status.textContent = status.dataset.online;
+    submit.setAttribute('disabled', false);
+    input.setAttribute('autofocus', true);
 
     const userIn = messageStatus('Пользователь появился в сети');
     content.appendChild(userIn);
   });
 
-  chat.querySelector('.message-submit').addEventListener('submit', sendMessage);
+  connection.addEventListener('close', event => {
+    status.textContent = status.dataset.offline;
+    submit.setAttribute('disabled', true);
+    if (status.textContent === 'Пользователь появился в сети') {
+      content.removeChild(status);
+    }
+
+    const userOut = messageStatus('Пользователь не в сети');
+    content.appendChild(userOut);
+  });
+
+  box.addEventListener('submit', sendMessage);
+
 
 
   connection.addEventListener('message', event => {
@@ -90,26 +109,18 @@ document.addEventListener('DOMContentLoaded', event => {
     if (message.message === '...') {
       loading();
     } else {
-      if(content.querySelector('.loading')) {
-        content.removeChild(content.querySelector('.loading'));
+      if (loading) {
+        content.removeChild(loading);
       }
       content.appendChild(getMessage(message));
     }
   });
 
   window.addEventListener('beforeunload', event => {
-    connection.addEventListener('close', event => {
-      chat.querySelector('.chat-status').textContent = chat.querySelector('.chat-status').dataset.offline;
-      chat.querySelector('.message-submit').setAttribute('disabled', );
-
-      const userOut = messageStatus('Пользователь не в сети');
-      content.appendChild(userOut);
-    });
     connection.close()
   });
 
   connection.addEventListener('error', error => {
     console.error(error.message);
   })
-
 })
