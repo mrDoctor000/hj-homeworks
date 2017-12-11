@@ -23,23 +23,12 @@ document.addEventListener('DOMContentLoaded', event => {
     })
   }
 
-  function loadTech(url) {
-    const funcName = randName();
-    return new Promise((done, fail) => {
-      window[funcName] = done;
-
-      const script = document.scripts[0].cloneNode();
-      script.src = `${url}?jsonp=${funcName}`;
-      document.body.appendChild(script);
-    })
-  }
-
   loadProfile('https://neto-api.herokuapp.com/profile/me')
     .then(res => {
       return res.json();
     })
     .then(res => {
-      loadTech(`https://neto-api.herokuapp.com/profile/${res.id}/technologies`)
+      loadProfile(`https://neto-api.herokuapp.com/profile/${res.id}/technologies`)
         .then(tech => {
           return tech.json();
         })
